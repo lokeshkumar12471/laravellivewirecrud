@@ -30,7 +30,11 @@
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <img class="w-8 h-8 rounded-full" src="{{ Storage::url($post->image) }}" />
                                     </td>
-                                    <td class="px-6 py-4 text-right text-sm">Edit Delete</td>
+                                    <td class="px-6 py-4 text-right text-sm">
+                                        <x-jet-button wire:click="showEditPostModal({{ $post->id }})">Edit
+                                        </x-jet-button>
+                                        Delete
+                                    </td>
                                 </tr>
                             @endforeach
                             <!-- More items... -->
@@ -45,12 +49,18 @@
     </div>
     <div>
         <x-jet-dialog-modal wire:model="showingPostModal">
-            <x-slot name="title">Create Post</x-slot>
+            @if ($isEditMode)
+                <x-slot name="title">Update Post</x-slot>
+            @else{
+                <x-slot name="title">Create Post</x-slot>
+                }
+            @endif
             <x-slot name="content">
                 <div class="space-y-8 divide-y divide-gray-200 w-1/2 mt-10">
                     <form enctype="multipart/form-data">
                         <div class="sm:col-span-6">
-                            <label for="title" class="block text-sm font-medium text-gray-700"> Post Title </label>
+                            <label for="title" class="block text-sm font-medium text-gray-700"> Post Title
+                            </label>
                             <div class="mt-1">
                                 <input type="text" id="title" wire:model.lazy="title" name="title"
                                     class="block w-full appearance-none bg-white border border-gray-400 rounded-md py-2 px-3 text-base leading-normal transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
@@ -60,7 +70,8 @@
                             @enderror
                         </div>
                         <div class="sm:col-span-6">
-                            <label for="title" class="block text-sm font-medium text-gray-700"> Post Image </label>
+                            <label for="title" class="block text-sm font-medium text-gray-700"> Post Image
+                            </label>
                             @if ($newImage)
                                 Photo Preview:
                                 <img src="{{ $newImage->temporaryUrl() }}">
@@ -87,7 +98,11 @@
                 </div>
             </x-slot>
             <x-slot name="footer">
-                <x-jet-button wire:click="storePost">Store</x-jet-button>
+                @if ($isEditMode)
+                    <x-jet-button wire:click="updateStore">Update</x-jet-button>
+                @else
+                    <x-jet-button wire:click="storePost">Store</x-jet-button>
+                @endif
             </x-slot>
         </x-jet-dialog-modal>
     </div>

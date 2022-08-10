@@ -13,8 +13,11 @@ class PostIndex extends Component
     public $newImage;
     public $body;
     public $title;
+    public $oldImage;
+    public $isEditMode;
     public function showPostModal()
     {
+        $this->reset();
         $this->showingPostModal = true;
     }
     public function storePost()
@@ -33,6 +36,16 @@ class PostIndex extends Component
         ]);
         $this->reset();
 
+    }
+    public function showEditPostModal($id)
+    {
+        $post = Post::FindOrFail($id);
+        $this->title = $post->title;
+        $this->body = $post->body;
+        $this->oldImage = $post->oldImage;
+        $this->isEditMode = true;
+
+        $this->showingPostModal = true;
     }
     public function render()
     {
