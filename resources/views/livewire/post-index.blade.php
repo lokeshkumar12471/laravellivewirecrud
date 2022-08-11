@@ -18,7 +18,7 @@
                                 <th scope="col"
                                     class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-200 uppercase tracking-wider">
                                     Image</th>
-                                <th scope="col" class="relative px-6 py-3">Edit</th>
+                                <th scope="col" class="relative px-6 py-3">Actions</th>
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
@@ -30,10 +30,15 @@
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <img class="w-8 h-8 rounded-full" src="{{ Storage::url($post->image) }}" />
                                     </td>
-                                    <td class="px-6 py-4 text-right text-sm">
-                                        <x-jet-button wire:click="showEditPostModal({{ $post->id }})">Edit
-                                        </x-jet-button>
-                                        Delete
+                                    <td class="px-6 py-4 text-right text-sm gap-2">
+                                        <div class="flex justify-center">
+                                            <x-jet-button wire:click="showEditPostModal({{ $post->id }})">Edit
+                                            </x-jet-button>
+                                            <x-jet-button class="bg-red-400 hover:bg-red-600"
+                                                wire:click="deletePost({{ $post->id }})">
+                                                Delete
+                                            </x-jet-button>
+                                        </div>
                                     </td>
                                 </tr>
                             @endforeach
@@ -72,6 +77,10 @@
                         <div class="sm:col-span-6">
                             <label for="title" class="block text-sm font-medium text-gray-700"> Post Image
                             </label>
+                            @if ($oldImage)
+                                Old Image:
+                                <img src="{{ Storage::url($oldImage) }}">
+                            @endif
                             @if ($newImage)
                                 Photo Preview:
                                 <img src="{{ $newImage->temporaryUrl() }}">
@@ -91,7 +100,7 @@
                                     class="shadow-sm focus:ring-indigo-500 appearance-none bg-white border border-gray-400 rounded-md py-2 px-3 text-base leading-normal transition duration-150 ease-in-out focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"></textarea>
                             </div>
                             @error('body')
-                                <span class="error">{{ $message }}</span>
+                                <span class="text-red-400">{{ $message }}</span>
                             @enderror
                         </div>
                     </form>
@@ -99,7 +108,7 @@
             </x-slot>
             <x-slot name="footer">
                 @if ($isEditMode)
-                    <x-jet-button wire:click="updateStore">Update</x-jet-button>
+                    <x-jet-button wire:click="updatePost">Update</x-jet-button>
                 @else
                     <x-jet-button wire:click="storePost">Store</x-jet-button>
                 @endif

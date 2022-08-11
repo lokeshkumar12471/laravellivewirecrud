@@ -15,6 +15,7 @@ class PostIndex extends Component
     public $title;
     public $oldImage;
     public $isEditMode;
+    public $post;
     public function showPostModal()
     {
         $this->reset();
@@ -39,13 +40,36 @@ class PostIndex extends Component
     }
     public function showEditPostModal($id)
     {
-        $post = Post::FindOrFail($id);
-        $this->title = $post->title;
-        $this->body = $post->body;
-        $this->oldImage = $post->oldImage;
+        $this->post = Post::FindOrFail($id);
+        $this->title = $this->post->title;
+        $this->body = $this->post->body;
+        $this->oldImage = $this->post->image;
         $this->isEditMode = true;
-
         $this->showingPostModal = true;
+    }
+    public function updatePost()
+    {
+        $this->validate([
+            'title' => 'required',
+            'body' => 'required',
+        ]);
+        $image = $this->post->image;
+        if ($this->newImage) {
+            $image = $this->newImage->store('public/posts');
+        }
+        $this->post->update([
+            'title' => $this->title,
+            'image' => $image,
+            'body' => $this->body,
+
+        ]);
+        $this->reset();
+    }
+    public function deletePost($id)
+    {
+        $post = Post::findOrFail($id)->delete();
+        $post->delete();
+        $this->reset();
     }
     public function render()
     {
